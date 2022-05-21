@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="style.css">
+    <title>Book Library</title>
+</head>
+<body>
+    <main>
+        <header>
+            <div id="logo">Book Library</div>
+        </header>
+        <div id="content">
+            <button id="add-book">Add Book</button>
+            <div id="cards">
+
+            </div>
+        </div>
+    </main>
+    <div id="modal">
+        <div class="modal-content">
+            <p>Add new book</p>
+            <div>
+                <input type="text" name="Book title" id="book-title" placeholder="Book Title" required="true">
+            </div>
+            <div>
+                <input type="text" name="Author" id="author" placeholder="Author" required="true">
+            </div>
+            <div class="pages">
+                <input type="number" name="Number of pages" id="pages" placeholder="Pages" required="true">
+            </div>
+            <div>
+                <label for="read">have you read it?</label>
+                <input type="checkbox" name="Finished" id="read" required="true">
+            </div>
+            <div class="buttons">
+                <input id="addBtn" type="submit" value="Add">
+                <input class="clear" type="button" value="Clear">
+            </div>
+          </div>
+    </div>
+</body>
+</html>
