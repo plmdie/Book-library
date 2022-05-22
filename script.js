@@ -1,7 +1,7 @@
 
 window.onload = () => {
     addEvents();
-    showBooks();
+    /* showBooks(); */
 }
 
 //move to function
@@ -11,8 +11,8 @@ const pagesEl = document.getElementById("pages");
 const statusEl = document.querySelector("#read");
 const cards = document.querySelector("#cards");
 
-let library = [
-    {
+let library = [];
+   /*  {
         title: 'Dune',
         author: 'jean lol',
         pages: 198,
@@ -25,7 +25,7 @@ let library = [
         pages: 154,
         status: false     
     }
-];
+]; */
 
 
 //change how function works by reading event target
@@ -52,20 +52,20 @@ class Book {
         this.status = status;
     }
 
-    getStatus() {
-        console.log(this.status);
-        this.status ? this.status = false : this.status = true;
-    }
+    getStatus() {this.status = !this.status;}
 }
 
+
+
 function addToLibrary() {
-    const [title, author, pages, status] = getBookData();
-    const newBook = new Book(title, author, pages, status);
-    const validate = library.find(book => book.title === title);
+    const newBook = getBookData();    
+    //check if book exists
+    const validate = library.find(book => book.title === newBook.title);
     if (!validate) {
         library.push(newBook);
         modal.style.display = "none";
-        updateBookList();
+        const index = library.findIndex(book => book.title === newBook.title);
+        createBookCard(newBook.title, newBook.author, newBook.pages, newBook.status, index); 
     } else alert("Book already exists in library");
 }
 
@@ -74,68 +74,54 @@ function getBookData() {
     const author = authorEl.value;
     const pages = pagesEl.value;
     const status = statusEl.checked;
-    return [title, author, pages, status];
-}
-
-function showBooks() {
-    library.forEach((el, index) => {
-        const valid = document.querySelector(`.card${index}`);
-        if (!valid) createBookCard(el.title, el.author, el.pages, el.status, index);
-    }); 
-
-    
+    return new Book (title, author, pages, status);
 }
 
 function createBookCard(title, author, pages, status, index) {
-
-    //create div .card
     const cardItem = document.createElement('div');
+    const readStatus = document.createElement('button');
+    const removeBtn = document.createElement('button');
+
+    //create card div
     cardItem.classList.add(`card`);
-    cardItem.classList.add(`card${index}`);
     cardItem.innerHTML = `
         <p>${title}</p>
         <p>${author}</p>
         <p>${pages}</p>`;
-    cards.appendChild(cardItem);
-
-    //select last created card
-    const lastCard = document.querySelector(`.card${index}`)
-    
+ 
     //create read status button
-    const readStatus = document.createElement('button');
     readStatus.setAttribute('data-title', index);
     readStatus.classList.add(`change-status`);
     readStatus.classList.add(`${status}`); 
     status ? readStatus.textContent = 'Finished' : readStatus.textContent = 'Not finished';
-    lastCard.appendChild(readStatus);   
+    readStatus.addEventListener('click', changeStatus);
 
     //create remove book button
-    const removeBtn = document.createElement('button');
     removeBtn.classList.add("remove-button");
     removeBtn.setAttribute('data-title', index);
     removeBtn.textContent = 'Remove book';
-    lastCard.appendChild(removeBtn);
-    
-    //add event listener
-    updateEventListener();
+    removeBtn.addEventListener('click', removeBook);
+
+    //append elements to DOM
+    cardItem.appendChild(readStatus);   
+    cardItem.appendChild(removeBtn);
+    cards.appendChild(cardItem);
 }
 
-function updateBookList() {
-    const i = library.length - 1;
-    createBookCard(library[i].title, library[i].author, library[i].pages, library[i].status, i); 
+
+function showBooks() {
+    library.forEach((el, index) => createBookCard(el.title, el.author, el.pages, el.status, index)); 
 }
 
 function removeBook(e) {
     const bookItem = e.target.getAttribute("data-title");
-    const element = document.querySelector(`.card${bookItem}`);
-
     library.splice(bookItem, 1);
-    element.remove();
+    clearLibrary();
+    showBooks();
 }
 
 function changeStatus(e) {
     const bookItem = e.target.getAttribute("data-title");
-
     if (library[bookItem].status) {
         e.target.classList.replace("true", "false");
         e.target.textContent = "Not finished";
@@ -143,23 +129,11 @@ function changeStatus(e) {
         e.target.classList.replace("false", "true");
         e.target.textContent = "Finished";
     }
-    
     library[bookItem].getStatus();
 }
 
 
 function clearLibrary() {
-    for (let i = 0; i < library.length; i++) {
-        document.querySelector(`.card${i}`).remove();    
-        
-    }
-    
-}
-
-function updateEventListener() {
-    const statusCheckbox = document.querySelectorAll(".change-status");
-    const removeButtons = document.querySelectorAll(".remove-button");
-
-    statusCheckbox.forEach(item => item.addEventListener('click', changeStatus));
-    removeButtons.forEach(item => item.addEventListener('click', removeBook));
+    const element = document.querySelectorAll(`.card`);
+    element.forEach(el => el.remove());
 }
