@@ -23,21 +23,23 @@
 #cards {
     width: 80%;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 50px;
     
 }
 
 .card {
+    padding: 20px 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 100px;
-    background-color: turquoise;
+    border: 1px solid  black;
+    border-radius: 10px;
+    background-color: rgb(196, 225, 245);
 }
 
-.card button.false { background-color: red; }
-.card button.true { background-color: green; }
+.card button.false { background-color: rgb(230, 186, 68); }
+.card button.true { background-color: rgb(161, 240, 161); }
 
 #modal {    
     display: none;
