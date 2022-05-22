@@ -1,46 +1,20 @@
 
-window.onload = () => {
-    addEvents();
-    /* showBooks(); */
-}
+window.onload = () => addEvents();
 
-//move to function
-const bookTitleEl = document.getElementById("book-title");
-const authorEl = document.getElementById("author");
-const pagesEl = document.getElementById("pages");
-const statusEl = document.querySelector("#read");
-const cards = document.querySelector("#cards");
 
 let library = [];
-   /*  {
-        title: 'Dune',
-        author: 'jean lol',
-        pages: 198,
-        status: true     
-    },
 
-    {
-        title: 'Dune II',
-        author: 'jean pierre',
-        pages: 154,
-        status: false     
-    }
-]; */
-
-
-//change how function works by reading event target
 function addEvents() {
     const modal = document.getElementById("modal");
     const addBook = document.getElementById("add-book");
     const addNewBook = document.getElementById("add-new-book");
 
-    addBook.onclick = () => modal.style.display = "block";
+    addBook.onclick = () => modal.className = "visible";
     addNewBook.onsubmit = function(e) {
         e.preventDefault();
         addToLibrary();    
     } 
-
-    window.onclick = (event) => {if (event.target == modal) modal.style.display = "none";}
+    window.onclick = (event) => {if (event.target == modal) modal.className = "hidden";}
 }
 
 
@@ -51,7 +25,6 @@ class Book {
         this.pages = pages;
         this.status = status;
     }
-
     getStatus() {this.status = !this.status;}
 }
 
@@ -63,21 +36,30 @@ function addToLibrary() {
     const validate = library.find(book => book.title === newBook.title);
     if (!validate) {
         library.push(newBook);
-        modal.style.display = "none";
+        modal.className = "hidden";
         const index = library.findIndex(book => book.title === newBook.title);
         createBookCard(newBook.title, newBook.author, newBook.pages, newBook.status, index); 
+        setTimeout(clearForm, 600);
     } else alert("Book already exists in library");
 }
 
+function clearForm() {
+    document.getElementById("book-title").value = '';
+    document.getElementById("author").value = '';
+    document.getElementById("pages").value = '';
+    document.querySelector("#read").checked = false;
+}
+
 function getBookData() {
-    const title = bookTitleEl.value;
-    const author = authorEl.value;
-    const pages = pagesEl.value;
-    const status = statusEl.checked;
+    const title = document.getElementById("book-title").value;
+    const author = document.getElementById("author").value;
+    const pages = document.getElementById("pages").value;
+    const status = document.querySelector("#read").checked;
     return new Book (title, author, pages, status);
 }
 
 function createBookCard(title, author, pages, status, index) {
+    const cards = document.querySelector("#cards");
     const cardItem = document.createElement('div');
     const readStatus = document.createElement('button');
     const removeBtn = document.createElement('button');
