@@ -1,14 +1,26 @@
 
 window.onload = () => addEvents();
 
-
-let library = [];
+let library = [
+    {
+        title: 'Dune',
+        author: 'Frank herbert',
+        pages: 431,
+        status: true
+    },
+    {
+        title: 'Harry Potter',
+        author: 'J. K. Rowling',
+        pages: 213,
+        status: false
+    },
+];
 
 function addEvents() {
     const modal = document.getElementById("modal");
-    const addBook = document.getElementById("add-book");
+    const addBook = document.querySelector(".add-button");
     const addNewBook = document.getElementById("add-new-book");
-
+    showBooks();
     addBook.onclick = () => modal.className = "visible";
     addNewBook.onsubmit = function(e) {
         e.preventDefault();
@@ -40,6 +52,7 @@ function addToLibrary() {
         const index = library.findIndex(book => book.title === newBook.title);
         createBookCard(newBook.title, newBook.author, newBook.pages, newBook.status, index); 
         setTimeout(clearForm, 600);
+        updateLibraryStats();
     } else alert("Book already exists in library");
 }
 
@@ -61,32 +74,23 @@ function getBookData() {
 function createBookCard(title, author, pages, status, index) {
     const cards = document.querySelector("#cards");
     const cardItem = document.createElement('div');
-    const readStatus = document.createElement('button');
-    const removeBtn = document.createElement('button');
+    let readStatus;
 
+    status ? readStatus = 'Read' : readStatus = 'Not read';
     //create card div
     cardItem.classList.add(`card`);
+    cardItem.classList.add(`card${index}`);
+    cardItem.bookIndex = index;
     cardItem.innerHTML = `
-        <p>${title}</p>
-        <p>${author}</p>
-        <p>${pages}</p>`;
- 
-    //create read status button
-    readStatus.setAttribute('data-title', index);
-    readStatus.classList.add(`change-status`);
-    readStatus.classList.add(`${status}`); 
-    status ? readStatus.textContent = 'Finished' : readStatus.textContent = 'Not finished';
-    readStatus.addEventListener('click', changeStatus);
-
-    //create remove book button
-    removeBtn.classList.add("remove-button");
-    removeBtn.setAttribute('data-title', index);
-    removeBtn.textContent = 'Remove book';
-    removeBtn.addEventListener('click', removeBook);
-
+        <p class='items'>${title}</p>
+        <p class='items'>By <b>${author}</b></p>
+        <p class='items'>Total pages: <b>${pages}</b></p>
+        <p class='items'><b>${readStatus}</b></p>`;
+    
+    cardItem.addEventListener('mouseenter', addButtons);
+    cardItem.addEventListener('mouseleave', disableButtons);
+    
     //append elements to DOM
-    cardItem.appendChild(readStatus);   
-    cardItem.appendChild(removeBtn);
     cards.appendChild(cardItem);
 }
 
@@ -96,26 +100,83 @@ function showBooks() {
 }
 
 function removeBook(e) {
-    const bookItem = e.target.getAttribute("data-title");
+    const bookItem = e.currentTarget.bookIndex;
+
     library.splice(bookItem, 1);
     clearLibrary();
     showBooks();
 }
 
 function changeStatus(e) {
-    const bookItem = e.target.getAttribute("data-title");
-    if (library[bookItem].status) {
-        e.target.classList.replace("true", "false");
-        e.target.textContent = "Not finished";
-    } else {
-        e.target.classList.replace("false", "true");
-        e.target.textContent = "Finished";
-    }
+    const bookItem = e.currentTarget.bookIndex;
+    const readStatus = document.querySelector('.read-status');
+    
     library[bookItem].getStatus();
+    if (library[bookItem].status) {readStatus.style.backgroundColor = 'rgb(23, 93, 197)';} 
+    else {readStatus.style.backgroundColor = 'rgb(226, 83, 27)';}
+    updateLibraryStats();
 }
 
 
 function clearLibrary() {
     const element = document.querySelectorAll(`.card`);
     element.forEach(el => el.remove());
+}
+
+function updateLibraryStats() {
+    const statsBooks = document.querySelector('.books');
+    const statsRead = document.querySelector('.read');
+    const statsUnread = document.querySelector('.unread');
+    let readCount = 0;
+    
+    library.forEach((el) => {if (el.status === true) readCount++;}); 
+    
+    statsBooks.textContent = library.length;
+    statsRead.textContent = readCount;
+    statsUnread.textContent = library.length - readCount;
+}
+
+function addButtons(e) {
+    const index = e.currentTarget.bookIndex;
+    const card = document.querySelector(`.card${index}`);
+    const items = document.querySelectorAll(`.card${index} > .items`);
+    const statusBtn = document.createElement('div');
+    const removeBtn = document.createElement('div');
+
+    for (const p of items) p.classList.add('blur');
+    
+    //add button for changing read status
+    statusBtn.classList.add('read-status');
+    statusBtn.innerHTML = '<i class="fa-solid fa-book-open"></i>';
+
+    //changing color based on red status
+    library[index].status ? statusBtn.style.backgroundColor = 'rgb(23, 93, 197)' : statusBtn.style.backgroundColor = 'rgb(226, 83, 27)';
+    
+    //listener to change status function
+    statusBtn.bookIndex = index;
+    statusBtn.addEventListener('click', changeStatus);
+   
+    //add button to remove book
+    removeBtn.classList.add('remove-card');
+    removeBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+
+    //listener to remove book function
+    removeBtn.bookIndex = index; 
+    removeBtn.addEventListener('click', removeBook);
+
+    card.append(statusBtn, removeBtn);
+}
+
+function disableButtons(e) {
+    const statusBtn = document.querySelector('.read-status');
+    const removeBtn = document.querySelector('.remove-card');
+    statusBtn.innerHTML = '';
+    removeBtn.innerHTML = '';
+    
+   const items = document.querySelectorAll('.items');
+
+   for (const p of items) p.classList.remove('blur');
+   
+    clearLibrary();
+    showBooks();
 }
