@@ -1,7 +1,9 @@
 
 window.onload = () => addEvents();
 
-let library = [
+let library = [];
+
+let bookdemo = [
     {
         title: 'Dune',
         author: 'Frank herbert',
@@ -13,22 +15,30 @@ let library = [
         author: 'J. K. Rowling',
         pages: 213,
         status: false
-    },
-];
+    }
+]
 
 function addEvents() {
     const modal = document.getElementById("modal");
     const addBook = document.querySelector(".add-button");
-    const addNewBook = document.getElementById("add-new-book");
+    const addNewBook = document.querySelector("#add-new-book");
+    const clearBtn = document.querySelector(".clear-library");
+
+    const newbook = new Book(bookdemo[0].title, bookdemo[0].author, bookdemo[0].pages, bookdemo[0].status );
+    const newbook1 = new Book(bookdemo[1].title, bookdemo[1].author, bookdemo[1].pages, bookdemo[1].status);
+    library.push(newbook);
+    library.push(newbook1);
     showBooks();
-    addBook.onclick = () => modal.className = "visible";
+    updateLibraryStats();
+
+    clearBtn.addEventListener('click', removeAllBooks);
     addNewBook.onsubmit = function(e) {
         e.preventDefault();
-        addToLibrary();    
+        addToLibrary();  
     } 
+    addBook.onclick = () => modal.className = "visible";
     window.onclick = (event) => {if (event.target == modal) modal.className = "hidden";}
 }
-
 
 class Book {
     constructor(title, author, pages, status){
@@ -39,8 +49,6 @@ class Book {
     }
     getStatus() {this.status = !this.status;}
 }
-
-
 
 function addToLibrary() {
     const newBook = getBookData();    
@@ -105,6 +113,7 @@ function removeBook(e) {
     library.splice(bookItem, 1);
     clearLibrary();
     showBooks();
+    updateLibraryStats();
 }
 
 function changeStatus(e) {
@@ -117,10 +126,17 @@ function changeStatus(e) {
     updateLibraryStats();
 }
 
-
 function clearLibrary() {
     const element = document.querySelectorAll(`.card`);
     element.forEach(el => el.remove());
+}
+
+function removeAllBooks() {
+    const element = document.querySelectorAll(`.card`);
+    element.forEach(el => el.remove());
+    library = [];
+    showBooks();
+    updateLibraryStats();
 }
 
 function updateLibraryStats() {

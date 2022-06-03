@@ -15,7 +15,7 @@
     <main>
         <header>
             <div id="logo">
-                <i class="fa-solid fa-book"></i>
+               <!--  <i class="fa-solid fa-book"></i> -->
                 <h1>myLibrary</h1>
             </div>
             <div id="library-data">
@@ -34,16 +34,18 @@
     </main>
     <div id="modal">
         <div class="modal-content">
-            <form id="add-new-book">
+            <div class="modal-title">
                 <p>Add new book</p>
-                <input type="text" name="Book title" id="book-title" placeholder="Book Title*" required/>
+            </div>
+            <form id="add-new-book" onsubmit="return false">
+                <input type="text" name="Book title" id="book-title" placeholder="Book Title*" minlength="5" required/>
                 <input type="text" name="Author" id="author" placeholder="Author*" required/>
                 <input type="number" name="Number of pages" id="pages" placeholder="Pages*" required/>
                 <div class="check">
-                    <label for="read">have you read it?</label>
+                    <label for="read">Have you read it?</label>
                     <input type="checkbox" name="Finished" id="read"/>
                 </div>
-                <input type="submit" value="Add">
+                <button class="add-button-modal" type="submit"><i class="fa-solid fa-add"></i></button>
             </form>
         </div>
     </div>
