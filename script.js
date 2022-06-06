@@ -2,7 +2,7 @@
 window.onload = () => addEvents();
 
 let library = [];
-
+/* 
 let bookdemo = [
     {
         title: 'Dune',
@@ -16,7 +16,7 @@ let bookdemo = [
         pages: 213,
         status: false
     }
-]
+] */
 
 function addEvents() {
     const modal = document.getElementById("modal");
@@ -24,10 +24,6 @@ function addEvents() {
     const addNewBook = document.querySelector("#add-new-book");
     const clearBtn = document.querySelector(".clear-library");
 
-    const newbook = new Book(bookdemo[0].title, bookdemo[0].author, bookdemo[0].pages, bookdemo[0].status );
-    const newbook1 = new Book(bookdemo[1].title, bookdemo[1].author, bookdemo[1].pages, bookdemo[1].status);
-    library.push(newbook);
-    library.push(newbook1);
     showBooks();
     updateLibraryStats();
 
@@ -111,6 +107,7 @@ function removeBook(e) {
     const bookItem = e.currentTarget.bookIndex;
 
     library.splice(bookItem, 1);
+    
     clearLibrary();
     showBooks();
     updateLibraryStats();
@@ -165,7 +162,7 @@ function addButtons(e) {
     statusBtn.classList.add('read-status');
     statusBtn.innerHTML = '<i class="fa-solid fa-book-open"></i>';
 
-    //changing color based on red status
+    //changing color based on read status
     library[index].status ? statusBtn.style.backgroundColor = 'rgb(23, 93, 197)' : statusBtn.style.backgroundColor = 'rgb(226, 83, 27)';
     
     //listener to change status function
@@ -183,15 +180,10 @@ function addButtons(e) {
     card.append(statusBtn, removeBtn);
 }
 
-function disableButtons(e) {
-    const statusBtn = document.querySelector('.read-status');
-    const removeBtn = document.querySelector('.remove-card');
-    statusBtn.innerHTML = '';
-    removeBtn.innerHTML = '';
-    
-   const items = document.querySelectorAll('.items');
+function disableButtons() {
+    const items = document.querySelectorAll('.items');
 
-   for (const p of items) p.classList.remove('blur');
+    for (const p of items) p.classList.remove('blur');
    
     clearLibrary();
     showBooks();
