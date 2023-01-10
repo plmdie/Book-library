@@ -2,8 +2,8 @@
 window.onload = () => addEvents();
 
 let library = [];
-/* 
-let bookdemo = [
+
+let preLibrary = [
     {
         title: 'Dune',
         author: 'Frank herbert',
@@ -16,7 +16,7 @@ let bookdemo = [
         pages: 213,
         status: false
     }
-] */
+] 
 
 function addEvents() {
     const modal = document.getElementById("modal");
@@ -24,7 +24,7 @@ function addEvents() {
     const addNewBook = document.querySelector("#add-new-book");
     const clearBtn = document.querySelector(".clear-library");
 
-    showBooks();
+    showPreBooks();
     updateLibraryStats();
 
     clearBtn.addEventListener('click', removeAllBooks);
@@ -67,6 +67,10 @@ function clearForm() {
     document.querySelector("#read").checked = false;
 }
 
+function createBook(title, author, pages, status) {
+    return new Book (title, author, pages, status);
+}
+
 function getBookData() {
     const title = document.getElementById("book-title").value;
     const author = document.getElementById("author").value;
@@ -99,17 +103,27 @@ function createBookCard(title, author, pages, status, index) {
 }
 
 
+function showPreBooks() {
+    preLibrary.forEach((el, index) => {
+        const Book = createBook(el.title, el.author, el.pages, el.status);
+        library.push(Book);
+        createBookCard(el.title, el.author, el.pages, el.status, index);
+        
+    });  
+}
+
 function showBooks() {
-    library.forEach((el, index) => createBookCard(el.title, el.author, el.pages, el.status, index)); 
+    library.forEach((el, index) => createBookCard(el.title, el.author, el.pages, el.status, index));
 }
 
 function removeBook(e) {
     const bookItem = e.currentTarget.bookIndex;
+    const el = document.querySelector(`.card${bookItem}`);
 
     library.splice(bookItem, 1);
     
-    clearLibrary();
-    showBooks();
+    el.remove();
+    
     updateLibraryStats();
 }
 
@@ -132,7 +146,6 @@ function removeAllBooks() {
     const element = document.querySelectorAll(`.card`);
     element.forEach(el => el.remove());
     library = [];
-    showBooks();
     updateLibraryStats();
 }
 
